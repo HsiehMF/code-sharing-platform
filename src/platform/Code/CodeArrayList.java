@@ -17,11 +17,11 @@ public class CodeArrayList {
         return codeArrayList.get(id-1);
     }
 
-    public static int getCodeId() {
-        return ++codeId;
-    }
+    // # need to refactor | rename, you do more than one thing
+    public static int getCodeId() { return ++codeId; }
 
     public static void add(Code code) {
         codeArrayList.add(code);
     }
+
 }

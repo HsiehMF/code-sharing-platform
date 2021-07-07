@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 @RestController
@@ -14,7 +13,7 @@ public class CodeController {
     private final static String DATE_FORMATTER = "yyyy/MM/dd HH:mm:ss";
 
     @RequestMapping(method = RequestMethod.GET, value = "/code/new")
-    public ResponseEntity<String> renderCreateCodePage() {
+    public ResponseEntity<String> renderAddCodePage() {
         String scriptGetTextArea = "<script type=\"text/javascript\">\n" +
                 "function send() {\n" +
                 "    let object = {\n" +
@@ -44,25 +43,36 @@ public class CodeController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/code/latest")
-    public ArrayList<Code> getCodeWithJson() {
+    public ArrayList<Code> getLatestCodeJson() {
+        // ### Need to refactor, because Collection.sort() doesn't not work
+        // ### So we use simple and brutal way to make it work
         ArrayList<Code> arrayList = CodeArrayList.getAllCodeSnippet();
-        Collections.reverse(arrayList);
-        return arrayList;
+        ArrayList<Code> reverseArrayList = new ArrayList<>();
+        if (arrayList.size() > 10) {
+            for (int i = arrayList.size()-1; i >= arrayList.size()-10; i--) {
+                reverseArrayList.add(arrayList.get(i));
+            }
+        } else {
+            for (int i = arrayList.size()-1; i >= 0; i--) {
+                reverseArrayList.add(arrayList.get(i));
+            }
+        }
+        return reverseArrayList;
     }
 
     @GetMapping("/api/code")
-    public ArrayList<Code> getAllCode() {
+    public ArrayList<Code> getAllCodeWithJson() {
         return CodeArrayList.getAllCodeSnippet();
     }
 
-    @GetMapping("/api/code/{id}")
-    public Code getCodeById(@PathVariable int id) {
-        return CodeArrayList.getCodeSnippetById(id);
+    @GetMapping("/api/code/{fetchNumber}")
+    public Code getCodeByIdWithJson(@PathVariable int fetchNumber) {
+        return CodeArrayList.getCodeSnippetById(fetchNumber);
     }
 
     @PostMapping(path = "/api/code/new", produces = "application/json;charset=UTF-8")
-    public HashMap<String, String> createCodeSnippetApi(@RequestBody Code newCodeContent) {
-        // This part needs to be refactored, separate several function, it mixed different abstract layer
+    public HashMap<String, String> addCodeApi(@RequestBody Code newCodeContent) {
+        // ### This part needs to be refactored, separate several function, it mixed different abstract layer
         Code codeInstance = new Code(CodeArrayList.getCodeId(),"Code", newCodeContent.getCode(), getCurrentDateTime());
         CodeArrayList.add(codeInstance);
         HashMap<String, String> map = new HashMap<>();

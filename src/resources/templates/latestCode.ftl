@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hello World !</title>
+    <title>Latest</title>
 </head>
 <body>
     <#list codeArrayList as item>
         <div class="container">
-            <p>${item.date}</p>
-            <div class="code_section" style="background: #DEDEDE; width: 500px; padding: 10px;">
-                ${item.code}
+            <span id="load_date">${item.date}</span>
+            <div class="code_snippet" style="background: #DEDEDE; width: 500px; padding: 10px;">
+                <pre id="code_snippet">${item.code}</pre>
             </div>
         </div>
     </#list>
