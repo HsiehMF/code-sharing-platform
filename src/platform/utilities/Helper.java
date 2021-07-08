@@ -32,9 +32,4 @@ public class Helper {
         return reverseList;
     }
 
-    public static Code addNewCodeToDatabase(Code newCodeContent) {
-        Code codeInstance = new Code(CodeArrayList.getCodeId(),"Code", newCodeContent.getCode(), getCurrentDateTime());
-        CodeArrayList.add(codeInstance);
-        return codeInstance;
-    }
 }

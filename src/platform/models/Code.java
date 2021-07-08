@@ -2,8 +2,15 @@ package platform.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Code")
 public class Code {
 
+    @Id
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int id;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

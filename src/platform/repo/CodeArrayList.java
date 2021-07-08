@@ -19,10 +19,9 @@ public class CodeArrayList {
         return codeArrayList.get(id-1);
     }
 
-    // # need to refactor | rename, you do more than one thing
     public static int getCodeId() { return ++codeId; }
 
-    public static void add(Code code) {
+    public static void addCode(Code code) {
         codeArrayList.add(code);
     }
 
