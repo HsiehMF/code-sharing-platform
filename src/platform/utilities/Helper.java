@@ -16,24 +16,33 @@ public class Helper {
     }
 
     public static ArrayList<Code> getCodeArrayListByDesc(ArrayList<Code> codeList) {
-        ArrayList<Code> reverseList = new ArrayList<Code>();
+        ArrayList<Code> publicCodeList = findAllPublicCodeSnippet(codeList);
+        return reverse(publicCodeList);
+    }
+
+    private static ArrayList<Code> findAllPublicCodeSnippet(ArrayList<Code> codeList) {
         ArrayList<Code> publicCodeList = new ArrayList<Code>();
         codeList.forEach(item -> {
             if (!item.isTimeLimit() && !item.isViewsLimit())
                 publicCodeList.add(item);
         });
+        return publicCodeList;
+    }
+
+    private static ArrayList<Code> reverse(ArrayList<Code> publicCodeList) {
+        ArrayList<Code> codeListByDesc = new ArrayList<>();
 
         if (publicCodeList.size() > 10) {
             for (int i = publicCodeList.size() - 1; i >= publicCodeList.size() - 10; i--) {
-                reverseList.add(publicCodeList.get(i));
+                codeListByDesc.add(publicCodeList.get(i));
             }
         } else {
             for (int i = publicCodeList.size() - 1; i >= 0; i--) {
-                reverseList.add(publicCodeList.get(i));
+                codeListByDesc.add(publicCodeList.get(i));
             }
         }
 
-        return reverseList;
+        return codeListByDesc;
     }
 
 }

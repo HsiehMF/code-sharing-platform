@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 
 import platform.models.Code;
 import platform.service.CodeService;
+import platform.utilities.Helper;
 
 import java.util.ArrayList;
 
-import static platform.utilities.Helper.getCodeArrayListByDesc;
-
 @Controller
 public class HtmlController {
+
     private final CodeService codeService;
 
     @Autowired
@@ -22,7 +22,7 @@ public class HtmlController {
     }
 
     @RequestMapping("/code/new")
-    public String getCreateCodePage() {
+    public String getAddCodePage() {
         return "newCode";
     }
 
@@ -43,7 +43,7 @@ public class HtmlController {
 
     @RequestMapping("/code/latest")
     public String getLatestCodePage(Model model) {
-        ArrayList<Code> latestCode = getCodeArrayListByDesc(codeService.getAllCodeSnippet());
+        ArrayList<Code> latestCode = Helper.getCodeArrayListByDesc(codeService.getAllCodeSnippet());
         model.addAttribute("codeArrayList", latestCode);
         return "latestCode";
     }

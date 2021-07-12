@@ -16,7 +16,7 @@ public class Code {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String title;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private long originTimeLimit;  // 解決時間相減問題的變數
+    private long originTimeLimit;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean timeLimit;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -44,23 +44,15 @@ public class CodeService {
 
     public void updateCodeTimeStatus(String uuid) {
         Code readyUpdateOrDeleteCode = getCodeSnippetById(uuid);
-        if (isTimeLimitExist(readyUpdateOrDeleteCode)) {
-            codeRepository.save(readyUpdateOrDeleteCode);
-        } else {
+
+        if (isTimeLimitExceeded(readyUpdateOrDeleteCode)) {
             codeRepository.delete(readyUpdateOrDeleteCode);
+        } else {
+            codeRepository.save(readyUpdateOrDeleteCode);
         }
     }
 
-    public void updateCodeViewsStatus(String uuid) {
-        Code readyUpdateOrDeleteCode = getCodeSnippetById(uuid);
-        if (isViewsLimitExist(readyUpdateOrDeleteCode)) {
-            codeRepository.save(readyUpdateOrDeleteCode);
-        } else {
-            codeRepository.delete(readyUpdateOrDeleteCode);
-        }
-    }
-
-    public boolean isTimeLimitExist(Code readyUpdateOrDeleteCode) {
+    public boolean isTimeLimitExceeded(Code readyUpdateOrDeleteCode) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime currentTime = LocalDateTime.parse(Helper.getCurrentDateTime(), formatter);
         LocalDateTime startTime = LocalDateTime.parse(readyUpdateOrDeleteCode.getDate(), formatter);
@@ -69,13 +61,23 @@ public class CodeService {
         long originTimeLimit = readyUpdateOrDeleteCode.getOriginTimeLimit();
 
         readyUpdateOrDeleteCode.setTime(originTimeLimit - elapsedTime);
-        return originTimeLimit - elapsedTime > 0;
+        return originTimeLimit - elapsedTime <= 0;
     }
 
-    public boolean isViewsLimitExist(Code readyUpdateOrDeleteCode) {
+    public void updateCodeViewsStatus(String uuid) {
+        Code readyUpdateOrDeleteCode = getCodeSnippetById(uuid);
+
+        if (isViewsLimitExceeded(readyUpdateOrDeleteCode)) {
+            codeRepository.delete(readyUpdateOrDeleteCode);
+        } else {
+            codeRepository.save(readyUpdateOrDeleteCode);
+        }
+    }
+
+    public boolean isViewsLimitExceeded(Code readyUpdateOrDeleteCode) {
         int viewsLimit = readyUpdateOrDeleteCode.getViews();
         readyUpdateOrDeleteCode.setViews(--viewsLimit);
-        return viewsLimit > 0;
+        return viewsLimit <= 0;
     }
 
 }
