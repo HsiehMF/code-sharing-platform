@@ -36,17 +36,12 @@ public class CodeController {
     public Code getCodeByIdJson(@PathVariable String uuid) {
         Code codeInstance = codeService.getCodeSnippetById(uuid);
 
-        System.out.println("id: " + codeInstance.getId());
-        System.out.println("views: " + codeInstance.getViews());
-        System.out.println("time: " + codeInstance.getTime());
-
-        if (codeInstance.getSecret()) {
-            codeService.updateCodeStatus(uuid);
+        if (codeInstance.isTimeLimit()) {
+            codeService.updateCodeTimeStatus(uuid);
         }
-
-        System.out.println("id: " + codeInstance.getId());
-        System.out.println("views: " + codeInstance.getViews());
-        System.out.println("time: " + codeInstance.getTime());
+        if (codeInstance.isViewsLimit()) {
+            codeService.updateCodeViewsStatus(uuid);
+        }
 
         return codeService.getCodeSnippetById(uuid);
     }
@@ -61,27 +56,12 @@ public class CodeController {
     }
 
     public Code addNewCodeToDatabase(Code newCodeContent) {
-        boolean isSecret = assertCodeVisibility(newCodeContent);
-        System.out.println(isSecret);
 
         String uuid = UUID.randomUUID().toString();
-        System.out.println("uuid: " + uuid);
-        System.out.println("view: " + newCodeContent.getViews());
-        System.out.println("time: " + newCodeContent.getTime());
-
-        Code codeInstance;
-        if (isSecret) {
-            codeInstance = new Code(uuid, "Code", newCodeContent.getCode(), getCurrentDateTime(), newCodeContent.getViews(), newCodeContent.getTime(), newCodeContent.getTime(), true);
-        } else {
-            codeInstance = new Code(uuid, "Code", newCodeContent.getCode(), getCurrentDateTime(), newCodeContent.getViews(), newCodeContent.getTime(), newCodeContent.getTime(), false);
-        }
+        Code codeInstance = new Code(uuid, "Code", newCodeContent.getCode(), getCurrentDateTime(), newCodeContent.getViews(), newCodeContent.getTime(), newCodeContent.getTime(), newCodeContent.getTime() > 0, newCodeContent.getViews() > 0);
 
         codeService.addCode(codeInstance);
         return codeInstance;
-    }
-
-    public boolean assertCodeVisibility(Code newCodeContent) {
-        return newCodeContent.getTime() > 0 || newCodeContent.getViews() > 0;
     }
 
 }

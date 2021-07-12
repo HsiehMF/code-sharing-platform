@@ -23,10 +23,14 @@ public class CodeService {
         this.codeRepository = codeRepository;
     }
 
+    public void addCode(Code code) {
+        codeRepository.save(code);
+    }
+
     public Code getCodeSnippetById(String uuid) {
-        Optional<Code> code = codeRepository.findById(uuid);
-        if (code.isPresent()) {
-            return code.get();
+        Optional<Code> codeSnippet = codeRepository.findById(uuid);
+        if (codeSnippet.isPresent()) {
+            return codeSnippet.get();
         } else {
             throw new CodeNotFoundException();
         }
@@ -38,59 +42,40 @@ public class CodeService {
         return codes;
     }
 
-    public void updateCodeStatus(String uuid) {
+    public void updateCodeTimeStatus(String uuid) {
         Code readyUpdateOrDeleteCode = getCodeSnippetById(uuid);
-
-        if (readyUpdateOrDeleteCode.getTime() == 0) {
-            boolean viewLimitTrigger = isViewsLimit(readyUpdateOrDeleteCode);
-            System.out.println(viewLimitTrigger);
-            if (viewLimitTrigger) {
-                codeRepository.deleteById(uuid);
-                System.out.println("delete");
-            } else {
-                codeRepository.save(readyUpdateOrDeleteCode);
-            }
-        } else if (readyUpdateOrDeleteCode.getViews() == 0) {
-            boolean timeLimitTrigger = isTimeLimit(readyUpdateOrDeleteCode);
-            if (timeLimitTrigger) {
-                codeRepository.deleteById(uuid);
-            } else {
-                codeRepository.save(readyUpdateOrDeleteCode);
-            }
+        if (isTimeLimitExist(readyUpdateOrDeleteCode)) {
+            codeRepository.save(readyUpdateOrDeleteCode);
         } else {
-            boolean timeLimitTrigger = isTimeLimit(readyUpdateOrDeleteCode);
-            boolean viewsLimitTrigger = isViewsLimit(readyUpdateOrDeleteCode);
-
-            if (timeLimitTrigger || viewsLimitTrigger) {
-                codeRepository.deleteById(uuid);
-            } else {
-                codeRepository.save(readyUpdateOrDeleteCode);
-            }
+            codeRepository.delete(readyUpdateOrDeleteCode);
         }
     }
 
-    public boolean isTimeLimit(Code readyUpdateOrDeleteCode) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    public void updateCodeViewsStatus(String uuid) {
+        Code readyUpdateOrDeleteCode = getCodeSnippetById(uuid);
+        if (isViewsLimitExist(readyUpdateOrDeleteCode)) {
+            codeRepository.save(readyUpdateOrDeleteCode);
+        } else {
+            codeRepository.delete(readyUpdateOrDeleteCode);
+        }
+    }
 
+    public boolean isTimeLimitExist(Code readyUpdateOrDeleteCode) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime currentTime = LocalDateTime.parse(Helper.getCurrentDateTime(), formatter);
         LocalDateTime startTime = LocalDateTime.parse(readyUpdateOrDeleteCode.getDate(), formatter);
 
         long elapsedTime = Duration.between(startTime, currentTime).getSeconds();
         long originTimeLimit = readyUpdateOrDeleteCode.getOriginTimeLimit();
-        readyUpdateOrDeleteCode.setTime(originTimeLimit - elapsedTime);
 
-        return originTimeLimit - elapsedTime <= 0;
+        readyUpdateOrDeleteCode.setTime(originTimeLimit - elapsedTime);
+        return originTimeLimit - elapsedTime > 0;
     }
 
-    public boolean isViewsLimit(Code readyUpdateOrDeleteCode) {
+    public boolean isViewsLimitExist(Code readyUpdateOrDeleteCode) {
         int viewsLimit = readyUpdateOrDeleteCode.getViews();
         readyUpdateOrDeleteCode.setViews(--viewsLimit);
-
-        return viewsLimit <= 0;
-    }
-
-    public void addCode(Code code) {
-        codeRepository.save(code);
+        return viewsLimit > 0;
     }
 
 }

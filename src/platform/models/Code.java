@@ -16,16 +16,18 @@ public class Code {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String title;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private long originTimeLimit;
+    private long originTimeLimit;  // 解決時間相減問題的變數
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private boolean secret;
+    private boolean timeLimit;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private boolean viewsLimit;
 
     private String code;
     private String date;
     private int views;
     private long time;
 
-    public Code(String id, String title, String code, String date, int views, long time, long originTimeLimit, boolean secret) {
+    public Code(String id, String title, String code, String date, int views, long time, long originTimeLimit, boolean timeLimit, boolean viewsLimit) {
         this.id = id;
         this.title = title;
         this.code = code;
@@ -33,7 +35,8 @@ public class Code {
         this.views = views;
         this.time = time;
         this.originTimeLimit = originTimeLimit;
-        this.secret = secret;
+        this.timeLimit = timeLimit;
+        this.viewsLimit = viewsLimit;
     }
 
     public Code() {
@@ -95,11 +98,19 @@ public class Code {
         this.originTimeLimit = originTimeLimit;
     }
 
-    public void setSecret(boolean secret) {
-        this.secret = secret;
+    public void setTimeLimit(boolean timeLimit) {
+        this.timeLimit = timeLimit;
     }
 
-    public boolean getSecret() {
-        return secret;
+    public boolean isTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setViewsLimit(boolean viewsLimit) {
+        this.viewsLimit = viewsLimit;
+    }
+
+    public boolean isViewsLimit() {
+        return viewsLimit;
     }
 }

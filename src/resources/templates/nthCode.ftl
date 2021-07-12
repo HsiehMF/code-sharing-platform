@@ -13,15 +13,13 @@
 
 <body>
     <span id="load_date">${codeSnippetHtml.date}</span>
-    <#if codeSnippetHtml.secret == true>
-        <#if codeSnippetHtml.views gte 0>
-            <br>
-            <span id="views_restriction">${codeSnippetHtml.views}</span> more views allowed
-        </#if>
-        <#if codeSnippetHtml.time gt 0>
-            <br>
-            The code will be available for <span id="time_restriction">${codeSnippetHtml.time}</span> seconds
-        </#if>
+    <#if codeSnippetHtml.viewsLimit && codeSnippetHtml.views gte 0>
+        <br>
+        <span id="views_restriction">${codeSnippetHtml.views}</span> more views allowed
+    </#if>
+    <#if codeSnippetHtml.timeLimit && codeSnippetHtml.time gte 0>
+        <br>
+        The code will be available for <span id="time_restriction">${codeSnippetHtml.time}</span> seconds
     </#if>
     <pre id="code_snippet">
         <code>${codeSnippetHtml.code}</code>

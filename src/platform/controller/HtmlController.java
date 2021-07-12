@@ -30,20 +30,13 @@ public class HtmlController {
     public String getNthCodePage(Model model, @PathVariable String uuid) {
         Code codeSnippetHtml = codeService.getCodeSnippetById(uuid);
 
-        System.out.println("id: " + codeSnippetHtml.getId());
-        System.out.println("views: " + codeSnippetHtml.getViews());
-        System.out.println("time: " + codeSnippetHtml.getTime());
-        System.out.println(codeSnippetHtml.getSecret());
-
-        if (codeSnippetHtml.getSecret()) {
-            codeService.updateCodeStatus(uuid);
+        if (codeSnippetHtml.isTimeLimit()) {
+            codeService.updateCodeTimeStatus(uuid);
+        }
+        if (codeSnippetHtml.isViewsLimit()) {
+            codeService.updateCodeViewsStatus(uuid);
         }
 
-        System.out.println("views: " + codeSnippetHtml.getViews());
-        System.out.println("time: " + codeSnippetHtml.getTime());
-        System.out.println(codeSnippetHtml.getSecret());
-
-//        codeSnippetHtml = codeService.getCodeSnippetById(uuid);
         model.addAttribute("codeSnippetHtml", codeSnippetHtml);
         return "nthCode";
     }

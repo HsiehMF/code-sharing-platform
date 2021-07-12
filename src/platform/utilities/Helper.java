@@ -17,19 +17,19 @@ public class Helper {
 
     public static ArrayList<Code> getCodeArrayListByDesc(ArrayList<Code> codeList) {
         ArrayList<Code> reverseList = new ArrayList<Code>();
-        System.out.println("注意這邊:" + codeList.size());
+        ArrayList<Code> publicCodeList = new ArrayList<Code>();
+        codeList.forEach(item -> {
+            if (!item.isTimeLimit() && !item.isViewsLimit())
+                publicCodeList.add(item);
+        });
 
-        if (codeList.size() > 10) {
-            for (int i = codeList.size() - 1; reverseList.size() < 10; i--) {
-                if (codeList.get(i).getSecret())
-                    continue;
-                reverseList.add(codeList.get(i));
+        if (publicCodeList.size() > 10) {
+            for (int i = publicCodeList.size() - 1; i >= publicCodeList.size() - 10; i--) {
+                reverseList.add(publicCodeList.get(i));
             }
         } else {
-            for (int i = codeList.size() - 1; i >= 0; i--) {
-                if (codeList.get(i).getSecret())
-                    continue;
-                reverseList.add(codeList.get(i));
+            for (int i = publicCodeList.size() - 1; i >= 0; i--) {
+                reverseList.add(publicCodeList.get(i));
             }
         }
 
