@@ -1,16 +1,15 @@
 package platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import platform.models.Code;
 import platform.service.CodeService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static platform.utilities.Helper.*;
-import static platform.utilities.Script.getScriptPage;
 
 @RestController
 public class CodeController {
@@ -20,12 +19,6 @@ public class CodeController {
     @Autowired
     public CodeController(CodeService codeService) {
         this.codeService = codeService;
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/code/new")
-    public ResponseEntity<String> getCreateCodePage() {
-        String page = getScriptPage();
-        return ResponseEntity.ok().body(page);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/code/latest")
@@ -39,10 +32,23 @@ public class CodeController {
         return codeService.getAllCodeSnippet();
     }
 
-    @GetMapping("/api/code/{fetchNumber}")
-    public Code getCodeByIdJson(@PathVariable int fetchNumber) {
+    @GetMapping("/api/code/{uuid}")
+    public Code getCodeByIdJson(@PathVariable String uuid) {
+        Code codeInstance = codeService.getCodeSnippetById(uuid);
 
-        return codeService.getCodeSnippetById(fetchNumber);
+        System.out.println("id: " + codeInstance.getId());
+        System.out.println("views: " + codeInstance.getViews());
+        System.out.println("time: " + codeInstance.getTime());
+
+        if (codeInstance.getSecret()) {
+            codeService.updateCodeStatus(uuid);
+        }
+
+        System.out.println("id: " + codeInstance.getId());
+        System.out.println("views: " + codeInstance.getViews());
+        System.out.println("time: " + codeInstance.getTime());
+
+        return codeService.getCodeSnippetById(uuid);
     }
 
     @PostMapping(path = "/api/code/new")
@@ -55,10 +61,27 @@ public class CodeController {
     }
 
     public Code addNewCodeToDatabase(Code newCodeContent) {
-        System.out.println("codeId: " + codeService.getCodeId());
-        Code codeInstance = new Code(codeService.getCodeId(),"Code", newCodeContent.getCode(), getCurrentDateTime());
+        boolean isSecret = assertCodeVisibility(newCodeContent);
+        System.out.println(isSecret);
+
+        String uuid = UUID.randomUUID().toString();
+        System.out.println("uuid: " + uuid);
+        System.out.println("view: " + newCodeContent.getViews());
+        System.out.println("time: " + newCodeContent.getTime());
+
+        Code codeInstance;
+        if (isSecret) {
+            codeInstance = new Code(uuid, "Code", newCodeContent.getCode(), getCurrentDateTime(), newCodeContent.getViews(), newCodeContent.getTime(), newCodeContent.getTime(), true);
+        } else {
+            codeInstance = new Code(uuid, "Code", newCodeContent.getCode(), getCurrentDateTime(), newCodeContent.getViews(), newCodeContent.getTime(), newCodeContent.getTime(), false);
+        }
+
         codeService.addCode(codeInstance);
         return codeInstance;
+    }
+
+    public boolean assertCodeVisibility(Code newCodeContent) {
+        return newCodeContent.getTime() > 0 || newCodeContent.getViews() > 0;
     }
 
 }

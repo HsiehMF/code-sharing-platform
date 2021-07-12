@@ -10,7 +10,7 @@ public class CodeSharingPlatform {
 
     public static void main(String[] args) {
         SpringApplication.run(CodeSharingPlatform.class, args);
-        System.out.println("Server is running on localhost:8899");
+        System.out.println("Server is running on localhost: 8899");
     }
 
 }

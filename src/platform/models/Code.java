@@ -12,27 +12,38 @@ public class Code {
 
     @Id
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private int id;
+    private String id;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String title;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private long originTimeLimit;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private boolean secret;
+
     private String code;
     private String date;
+    private int views;
+    private long time;
 
-    public Code(int id, String title, String code, String date) {
+    public Code(String id, String title, String code, String date, int views, long time, long originTimeLimit, boolean secret) {
         this.id = id;
         this.title = title;
         this.code = code;
         this.date = date;
+        this.views = views;
+        this.time = time;
+        this.originTimeLimit = originTimeLimit;
+        this.secret = secret;
     }
 
     public Code() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,11 +56,11 @@ public class Code {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
-    public void setTitle(String updateTitle) {
-        this.title = updateTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDate() {
@@ -60,4 +71,35 @@ public class Code {
         this.date = date;
     }
 
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public long getOriginTimeLimit() {
+        return originTimeLimit;
+    }
+
+    public void setOriginTimeLimit(long originTimeLimit) {
+        this.originTimeLimit = originTimeLimit;
+    }
+
+    public void setSecret(boolean secret) {
+        this.secret = secret;
+    }
+
+    public boolean getSecret() {
+        return secret;
+    }
 }

@@ -1,7 +1,6 @@
 package platform.utilities;
 
 import platform.models.Code;
-import platform.repo.CodeArrayList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,13 +17,18 @@ public class Helper {
 
     public static ArrayList<Code> getCodeArrayListByDesc(ArrayList<Code> codeList) {
         ArrayList<Code> reverseList = new ArrayList<Code>();
+        System.out.println("注意這邊:" + codeList.size());
 
         if (codeList.size() > 10) {
-            for (int i = codeList.size() - 1; i >= codeList.size() - 10; i--) {
+            for (int i = codeList.size() - 1; reverseList.size() < 10; i--) {
+                if (codeList.get(i).getSecret())
+                    continue;
                 reverseList.add(codeList.get(i));
             }
         } else {
             for (int i = codeList.size() - 1; i >= 0; i--) {
+                if (codeList.get(i).getSecret())
+                    continue;
                 reverseList.add(codeList.get(i));
             }
         }
